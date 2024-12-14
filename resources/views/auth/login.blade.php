@@ -3,6 +3,9 @@
         <x-slot name="logo">
             <x-authentication-card-logo />
         </x-slot>
+        <h1 class="text-2xl text-center font-extrabold font-sans mb-5 mt-3">
+            Press Release Room
+        </h1>
 
         <x-validation-errors class="mb-4" />
 
