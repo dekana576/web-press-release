@@ -9,6 +9,8 @@ class PressRelease extends Model
 {
     use HasFactory;
 
+    protected $table = "press_release";
+
     protected $fillable = [
         'press_name',
         'description',

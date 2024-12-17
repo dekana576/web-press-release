@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PressRelease;
 use Illuminate\Http\Request;
 
 class PressReleaseController extends Controller
@@ -23,7 +24,7 @@ class PressReleaseController extends Controller
      */
     public function create()
     {
-        //
+        return view('data.create');
     }
 
     /**
@@ -31,7 +32,17 @@ class PressReleaseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        PressRelease::create([
+            'press_name' => $request->name,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->back()->with('success', 'Data added successfully!');
     }
 
     /**
