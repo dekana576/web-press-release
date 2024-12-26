@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [PressReleaseController::class, 'index'])->name('dashboard');
     Route::get('/press-release', [PressReleaseController::class, 'pressIndex'])->name('press_release');
+    Route::get('/press-data', [PressReleaseController::class, 'getPress'])->name('data.press');
+
     Route::get('/data/create', [PressReleaseController::class, 'create'])->name('data.create');
     Route::post('/data/store', [PressReleaseController::class, 'store'])->name('data.store');
 });

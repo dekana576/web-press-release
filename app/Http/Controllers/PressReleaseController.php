@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PressRelease;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class PressReleaseController extends Controller
 {
@@ -18,6 +19,35 @@ class PressReleaseController extends Controller
     {
         return view('press_release');
     }
+
+    public function getPress(Request $request)
+{
+    $press = PressRelease::query();
+
+    // Filter berdasarkan bulan
+    if ($request->has('month') && !empty($request->month)) {
+        $press->whereMonth('created_at', $request->month);
+    }
+
+    // Filter berdasarkan pencarian global
+    if ($request->has('search') && !empty($request->search['value'])) {
+        $searchValue = $request->search['value'];
+        $press->where(function($query) use ($searchValue) {
+            $query->where('press_name', 'like', "%{$searchValue}%")
+                  ->orWhere('description', 'like', "%{$searchValue}%");
+        });
+    }
+
+    return DataTables::of($press)
+        ->addColumn('action', function ($row) {
+            $viewButton = '<a href="/press/' . $row->id . '/view" class="btn btn-sm btn-primary">View</a>';
+            $editButton = '<a href="/press/' . $row->id . '/edit" class="btn btn-sm btn-warning">Edit</a>';
+            return $viewButton . ' ' . $editButton;
+        })
+        ->rawColumns(['action'])
+        ->make(true);
+}
+
 
     /**
      * Show the form for creating a new resource.
