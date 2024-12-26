@@ -13,6 +13,9 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <!-- DataTables CSS -->
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
     </head>
     <style>
 .dataTables_wrapper {
@@ -274,22 +277,20 @@ table.dataTable tbody tr:nth-child(even) {
             });
 
             function linkRenderer(data) {
-        if (data) {
-            // Tampilkan bulat hijau jika link ada
-            return `<a href="${data}" target="_blank" class="text-green-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block" fill="currentColor" viewBox="0 0 24 24" stroke="none">
-                            <circle cx="12" cy="12" r="12" />
-                        </svg>
-                    </a>`;
-        } else {
-            // Tampilkan bulat merah jika link tidak ada
-            return `<span class="text-red-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block" fill="currentColor" viewBox="0 0 24 24" stroke="none">
-                            <circle cx="12" cy="12" r="12" />
-                        </svg>
-                    </span>`;
-        }
-    }
+                if (data) {
+                    // Tampilkan ikon centang hijau jika link ada
+                    return `<a href="${data}" target="_blank" class="text-green-500 text-lg">
+                                <i class="fas fa-check-circle"></i>
+                            </a>`;
+                } else {
+                    // Tampilkan ikon silang merah jika link tidak ada
+                    return `<span class="text-red-500 text-lg">
+                                <i class="fas fa-times-circle"></i>
+                            </span>`;
+                }
+            }
+
+
     
             // Event listener untuk filter bulan
             $('#filter-month').change(function() {
