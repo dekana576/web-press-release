@@ -18,63 +18,56 @@
 
     </head>
     <style>
-.dataTables_wrapper {
-    position: relative;
-    overflow: auto;
-}
+        .dataTables_wrapper {
+            position: relative;
+            overflow: auto;
+        }
 
-table.dataTable thead th,
-table.dataTable tbody td {
-    white-space: nowrap; /* Agar konten dalam cell tidak mempengaruhi layout */
-    padding: 8px 16px; /* Tambahkan padding untuk jarak antar konten */
-}
+        table.dataTable thead th,
+        table.dataTable tbody td {
+            white-space: nowrap; /* Agar konten dalam cell tidak mempengaruhi layout */
+            padding: 8px 16px; /* Tambahkan padding untuk jarak antar konten */
+        }
 
-table.dataTable tbody td:first-child{
-    position: sticky;
-    left: 0;
-    background-color: white; /* Background agar cell tidak overlap */
-    z-index: 999; /* Z-index tinggi untuk menutupi elemen lain saat di scroll */
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Efek bayangan agar cell terlihat menonjol */
-    min-width: 150px; /* Menambahkan lebar minimal agar cell tidak terlalu kecil */
-}
+        table.dataTable tbody td:first-child,
+        table.dataTable tbody td:nth-child(2) {
+            position: sticky;
+            left: 0;
+            background-color: white; /* Background agar cell tidak overlap */
+            z-index: 999; /* Z-index tinggi untuk menutupi elemen lain saat di scroll */
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Efek bayangan agar cell terlihat menonjol */
+        }
 
-,
-table.dataTable thead th:first-child {
-    position: sticky;
-    left: 0;
-    /* Background agar cell tidak overlap */
-    z-index: 999; /* Z-index tinggi untuk menutupi elemen lain saat di scroll */
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Efek bayangan agar cell terlihat menonjol */
-    min-width: 150px; /* Menambahkan lebar minimal agar cell tidak terlalu kecil */
-}
+        table.dataTable thead th:first-child,
+        table.dataTable thead th:nth-child(2) {
+            position: sticky;
+            left: 0;
+            z-index: 1001; /* Z-index tinggi untuk menutupi elemen lain saat di scroll */
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Efek bayangan agar cell terlihat menonjol */
+        }
 
-table.dataTable thead th {
-    position: sticky;
-    top: 0;
-    z-index: 1000; /* Tetap di atas saat scroll ke bawah */
-    background-color: #007bff; /* Ganti warna background header menjadi biru */
-    color: white; /* Warna teks putih agar kontras dengan background biru */
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Efek bayangan pada header */
-}
+        table.dataTable thead th {
+            position: sticky;
+            top: 0;
+            z-index: 1000; /* Tetap di atas saat scroll ke bawah */
+            background-color: #007bff; /* Ganti warna background header menjadi biru */
+            color: white; /* Warna teks putih agar kontras dengan background biru */
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Efek bayangan pada header */
+        }
 
-table.dataTable thead th:first-child {
-    z-index: 1001; /* Z-index lebih tinggi untuk kolom pertama pada header */
-}
+        table.dataTable tbody tr {
+            background-color: white; /* Warna baris tetap putih */
+        }
 
-table.dataTable tbody tr {
-    background-color: white; /* Warna baris tetap putih */
-}
-
-table.dataTable tbody tr:nth-child(even) {
-    background-color: #f9f9f9; /* Warna selang-seling untuk baris */
-}
-
+        table.dataTable tbody tr:nth-child(even) {
+            background-color: #f9f9f9; /* Warna selang-seling untuk baris */
+        }
     </style>
     <body class="bg-gray-100 font-sans antialiased">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg mt-8">
-                <div class="container mx-auto mt-8 p-5 bg-white shadow-lg rounded-lg">
-                    <h1 class="text-3xl font-extrabold text-center text-blue-600 mb-6">Press Release</h1>
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg mt-4 mb-10">
+                <div class="container mx-auto mt-4 p-5 bg-white shadow-lg rounded-lg">
+                    <h1 class="text-3xl font-extrabold text-center text-blue-600 mb-3">Press Release</h1>
 
                     <select id="filter-month" class="block w-full mt-2 p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700">
                         <option value="">All Months</option>
@@ -107,6 +100,7 @@ table.dataTable tbody tr:nth-child(even) {
                     <table id="press-table" class="min-w-full bg-white border-collapse border border-gray-300 rounded-lg shadow-sm">
                         <thead class="bg-blue-500 text-white border border-gray-300">
                             <tr>
+                                <th class="px-4 py-2 border border-gray-300">Date</th>
                                 <th class="px-4 py-2 border border-gray-300">Press Name</th>
                                 {{-- <th class="px-4 py-2 border border-gray-300">Description</th> --}}
                                 <th class="px-4 py-2 border border-gray-300">Kabarnusa</th>
@@ -143,7 +137,7 @@ table.dataTable tbody tr:nth-child(even) {
                 serverSide: true,
                 scrollX: true, // Tambahkan scrollX agar tabel bisa di-scroll horizontal
                 fixedColumns: {
-                    leftColumns: 1 // Kolom pertama (press_name) akan menjadi sticky di kiri
+                    leftColumns: 2 // Kolom pertama (press_name) akan menjadi sticky di kiri
                 },
                 fixedHeader: true,
                 ajax: {
@@ -153,6 +147,7 @@ table.dataTable tbody tr:nth-child(even) {
                     }
                 },
                 columns: [
+                    { data: 'created_at', name: 'created_at' },
                     { data: 'press_name', name: 'press_name', width: '500px' },
                     // { data: 'description', name: 'description' },
                     {
@@ -260,8 +255,8 @@ table.dataTable tbody tr:nth-child(even) {
                     }
                 ],
                 
-                lengthMenu: [5, 10, 25, 50],
-                pageLength: 5,
+                lengthMenu: [10, 25, 50],
+                pageLength: 10,
                 language: {
                     search: "Search:",
                     lengthMenu: "Show _MENU_ entries",

@@ -26,4 +26,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/data/create', [PressReleaseController::class, 'create'])->name('data.create');
     Route::post('/data/store', [PressReleaseController::class, 'store'])->name('data.store');
+
+    Route::get('/data/{id}/view', [PressReleaseController::class, 'show'])->name('data.view');
 });

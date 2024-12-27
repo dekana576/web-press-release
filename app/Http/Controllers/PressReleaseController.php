@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PressRelease;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -20,33 +21,42 @@ class PressReleaseController extends Controller
         return view('press_release');
     }
 
+
     public function getPress(Request $request)
-{
-    $press = PressRelease::query();
+    {
+        $press = PressRelease::query();
 
-    // Filter berdasarkan bulan
-    if ($request->has('month') && !empty($request->month)) {
-        $press->whereMonth('created_at', $request->month);
+        // Filter berdasarkan bulan
+        if ($request->has('month') && !empty($request->month)) {
+            $press->whereMonth('created_at', $request->month);
+        }
+
+        // Filter berdasarkan pencarian global
+        if ($request->has('search') && !empty($request->search['value'])) {
+            $searchValue = $request->search['value'];
+            $press->where(function($query) use ($searchValue) {
+                $query->where('press_name', 'like', "%{$searchValue}%")
+                    ->orWhere('description', 'like', "%{$searchValue}%");
+            });
+        }
+
+        // Urutkan data dari yang terbaru
+        $press->orderBy('created_at', 'desc');
+
+        return DataTables::of($press)
+            ->editColumn('created_at', function ($row) {
+                return Carbon::parse($row->created_at)->format('d-m-Y'); // Menampilkan hanya tanggal
+            })
+            ->addColumn('action', function ($row) {
+                $viewButton = '<a href="/data/' . $row->id . '/view" class="btn btn-sm btn-primary">View</a>';
+                $editButton = '<a href="/data/' . $row->id . '/edit" class="btn btn-sm btn-warning">Edit</a>';
+                return $viewButton . ' ' . $editButton;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 
-    // Filter berdasarkan pencarian global
-    if ($request->has('search') && !empty($request->search['value'])) {
-        $searchValue = $request->search['value'];
-        $press->where(function($query) use ($searchValue) {
-            $query->where('press_name', 'like', "%{$searchValue}%")
-                  ->orWhere('description', 'like', "%{$searchValue}%");
-        });
-    }
 
-    return DataTables::of($press)
-        ->addColumn('action', function ($row) {
-            $viewButton = '<a href="/press/' . $row->id . '/view" class="btn btn-sm btn-primary">View</a>';
-            $editButton = '<a href="/press/' . $row->id . '/edit" class="btn btn-sm btn-warning">Edit</a>';
-            return $viewButton . ' ' . $editButton;
-        })
-        ->rawColumns(['action'])
-        ->make(true);
-}
 
 
     /**
@@ -80,7 +90,9 @@ class PressReleaseController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $press = PressRelease::findOrFail($id);
+
+        return view('view', compact('press'));
     }
 
     /**
