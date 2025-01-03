@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\PressRelease;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 class PressReleaseController extends Controller
@@ -49,7 +51,7 @@ class PressReleaseController extends Controller
             })
             ->editColumn('press_name', function ($row) {
                 $maxLength = 50; // Batasi panjang karakter
-                return strlen($row->press_name) > $maxLength ? substr($row->press_name, 0, $maxLength) . '...' : $row->press_name;
+                return strlen($row->press_name) > $maxLength ? substr($row->press_name, 0, $maxLength) . ' ...' : $row->press_name;
             })
             ->addColumn('action', function ($row) {
                 return $row->id; // Hanya mengembalikan ID untuk frontend
@@ -73,19 +75,39 @@ class PressReleaseController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate each image
+    ]);
 
-        PressRelease::create([
-            'press_name' => $request->name,
-            'description' => $request->description,
-        ]);
+    // Handle multiple image uploads
+    $imagePaths = [];
+    if ($request->hasFile('image')) {
+        foreach ($request->file('image') as $image) {
+            // Generate unique name for the image
+            $imageName = time() . '_' . $image->getClientOriginalName();
 
-        return redirect()->back()->with('success', 'Data added successfully!');
+            // Store image in 'uploads' directory within 'public' disk
+            $imagePath = $image->storeAs('uploads', $imageName, 'public');
+
+            // Store only the relative path in the array (without the full URL)
+            $imagePaths[] = $imagePath; // Store path relative to 'storage/app/public'
+        }
     }
+
+    // Save press release data with the image paths stored as JSON in the database
+    $pressRelease = PressRelease::create([
+        'press_name' => $request->name,
+        'description' => $request->description,
+        'image' => json_encode($imagePaths), // Store image paths as JSON in the database
+    ]);
+
+    return redirect()->back()->with('success', 'Data added successfully with images!');
+}
+
+
 
     /**
      * Display the specified resource.
@@ -153,11 +175,31 @@ class PressReleaseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+
+
     public function destroy($id)
     {
+        // Ambil data PressRelease berdasarkan ID
         $pressRelease = PressRelease::findOrFail($id);
+
+        // Decode gambar jika menyimpan dalam bentuk array JSON
+        $images = json_decode($pressRelease->image);
+
+        // Hapus setiap gambar dari storage
+        foreach ($images as $image) {
+            $imagePath = $image;
+
+            // Cek jika gambar ada sebelum menghapusnya
+            if (Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
+            }
+        }
+
+        // Hapus data press release dari database
         $pressRelease->delete();
 
-        return response()->json(['message' => 'Data berhasil dihapus!']);
+        return response()->json(['message' => 'Data dan gambar berhasil dihapus!']);
     }
+
+
 }

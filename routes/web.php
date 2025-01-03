@@ -26,6 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/data/create', [PressReleaseController::class, 'create'])->name('data.create');
     Route::post('/data/store', [PressReleaseController::class, 'store'])->name('data.store');
+    Route::post('/image-upload', [PressReleaseController::class, 'uploadImage'])->name('image.upload');
 
     Route::get('/data/{id}/edit', [PressReleaseController::class, 'edit'])->name('data.edit');
     Route::put('/data/{id}', [PressReleaseController::class, 'update'])->name('data.update');

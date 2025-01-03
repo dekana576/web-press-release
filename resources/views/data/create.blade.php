@@ -17,7 +17,7 @@
                         {{ session('success') }}
                     </div>
                 @endif
-                <form action="{{ route('data.store') }}" method="POST" class="space-y-4" id="createForm">
+                <form action="{{ route('data.store') }}" method="POST" class="space-y-4" id="createForm" enctype="multipart/form-data">
                     @csrf
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700">Name:</label>
@@ -30,6 +30,11 @@
                         <!-- Hidden Input to store the HTML content -->
                         <textarea id="description" name="description" style="display: none;"></textarea>
                     </div>
+                    <div>
+                        <label for="image" class="block text-sm font-medium text-gray-700">Upload Images:</label>
+                        <input type="file" id="image" name="image[]" accept="image/*" multiple class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
                     <div class="flex justify-end gap-3">
                         <a href="{{ route('press_release') }}" class="inline-flex items-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
                             Back
@@ -54,7 +59,7 @@
                         [{ header: [1, 2, 3, false] }],
                         ['bold', 'italic', 'underline'],
                         [{ list: 'ordered' }, { list: 'bullet' }],
-                        ['link', 'image'],
+                        ['link', 'image'], // Include image button in toolbar
                     ],
                 },
             });

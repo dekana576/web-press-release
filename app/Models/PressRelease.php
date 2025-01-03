@@ -14,6 +14,7 @@ class PressRelease extends Model
     protected $fillable = [
         'press_name',
         'description',
+        'image',
         'link_kabarnusa',
         'link_baliportal',
         'link_updatebali',
