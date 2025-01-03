@@ -18,6 +18,7 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
     </head>
+
     <style>
         .dataTables_wrapper {
             position: relative;
@@ -34,7 +35,7 @@
             padding: 8px 16px; /* Tambahkan padding untuk jarak antar konten */
         }
     
-        /* Sticky pada kolom kiri */
+        /* Sticky pada kolom kiri (Press Name) */
         table.dataTable tbody td:first-child,
         table.dataTable tbody td:nth-child(2) {
             position: sticky;
@@ -83,6 +84,13 @@
             background-color: white; /* Warna baris tetap putih */
         }
     
+        /* CSS untuk memotong teks dengan tiga titik */
+        table.dataTable tbody td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    
         table.dataTable tbody tr:nth-child(even) {
             background-color: #f9f9f9; /* Warna selang-seling untuk baris */
         }
@@ -92,12 +100,12 @@
             overflow-x: auto; /* Memungkinkan scroll horizontal */
             -webkit-overflow-scrolling: touch; /* Smooth scrolling untuk perangkat mobile */
         }
-
+    
         /* Aturan untuk kolom default */
         .responsive-column {
             white-space: nowrap; /* Pastikan teks tidak membungkus secara default */
         }
-
+    
         /* Untuk layar kecil */
         @media (max-width: 768px) {
             .responsive-column {
@@ -106,8 +114,20 @@
                 word-break: break-word; /* Pisahkan kata panjang jika diperlukan */
             }
         }
-
+    
+        /* Custom style for Press Name column */
+        table.dataTable th:nth-child(2),
+        table.dataTable td:nth-child(2) {
+            width: 150px; /* Atur lebar kolom Press Name, tidak auto */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Teks yang melebihi batas akan dipotong dengan titik-titik */
+            white-space: nowrap; /* Mencegah teks membungkus */
+        }
     </style>
+    
+    
+   
+    
     
     <body class="bg-gray-100 font-sans antialiased">
         <x-slot name="header">
@@ -135,7 +155,7 @@
                         <option value="11">November</option>
                         <option value="12">December</option>
                     </select>
-                    
+    
                     <!-- Add Data Button -->
                     <div class="flex justify-end mb-6 mt-10">
                         <a href="{{ route('data.create') }}">
@@ -152,7 +172,7 @@
                                 <tr>
                                     <th class="px-4 py-2 border border-gray-300">Date</th>
                                     <th class="px-4 py-2 border border-gray-300">Press Name</th>
-                                    {{-- <th class="px-4 py-2 border border-gray-300">Description</th> --}}
+                                    <!-- <th class="px-4 py-2 border border-gray-300">Description</th> -->
                                     <th class="px-4 py-2 border border-gray-300">Kabarnusa</th>
                                     <th class="px-4 py-2 border border-gray-300">Baliportal</th>
                                     <th class="px-4 py-2 border border-gray-300">Updatebali</th>
@@ -176,7 +196,7 @@
                 </div>
             </div>
         </div>
-
+    
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -198,7 +218,7 @@
                 },
                 columns: [
                     { data: 'created_at', name: 'created_at' },
-                    { data: 'press_name', name: 'press_name', className: 'responsive-column', width: '100px' },
+                    { data: 'press_name', name: 'press_name', className: 'responsive-column' },
                     // { data: 'description', name: 'description' },
                     {
                         data: 'link_kabarnusa',
@@ -322,6 +342,14 @@
 
                     }
                 ],
+
+                columnDefs: [
+                {
+                    targets: 1, // Target kolom kedua (Press Name)
+                    width: '200px', // Tentukan lebar kolom secara eksplisit
+                    className: 'text-left text-ellipsis', // Tambahkan kelas text-ellipsis
+                },
+            ],
                 
                 lengthMenu: [10, 25, 50],
                 pageLength: 10,

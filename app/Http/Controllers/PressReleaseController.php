@@ -47,6 +47,10 @@ class PressReleaseController extends Controller
             ->editColumn('created_at', function ($row) {
                 return Carbon::parse($row->created_at)->format('d-m-Y'); // Menampilkan hanya tanggal
             })
+            ->editColumn('press_name', function ($row) {
+                $maxLength = 50; // Batasi panjang karakter
+                return strlen($row->press_name) > $maxLength ? substr($row->press_name, 0, $maxLength) . '...' : $row->press_name;
+            })
             ->addColumn('action', function ($row) {
                 return $row->id; // Hanya mengembalikan ID untuk frontend
             })
@@ -69,22 +73,19 @@ class PressReleaseController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    // Validasi input, pastikan 'description' diterima sebagai string HTML
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'required|string|min:1', // Validasi untuk string HTML
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
 
-    // Simpan data ke database, pastikan konten HTML tetap utuh
-    PressRelease::create([
-        'press_name' => $request->name,
-        'description' => $request->description, // Menyimpan HTML
-    ]);
+        PressRelease::create([
+            'press_name' => $request->name,
+            'description' => $request->description,
+        ]);
 
-    return redirect()->back()->with('success', 'Data added successfully!');
-}
-
+        return redirect()->back()->with('success', 'Data added successfully!');
+    }
 
     /**
      * Display the specified resource.
