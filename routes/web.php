@@ -27,5 +27,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/data/create', [PressReleaseController::class, 'create'])->name('data.create');
     Route::post('/data/store', [PressReleaseController::class, 'store'])->name('data.store');
 
+    Route::get('/data/{id}/edit', [PressReleaseController::class, 'edit'])->name('data.edit');
+    Route::put('/data/{id}', [PressReleaseController::class, 'update'])->name('data.update');
+
     Route::get('/data/{id}/view', [PressReleaseController::class, 'show'])->name('data.view');
+    Route::delete('/data/{id}/delete', [PressReleaseController::class, 'destroy'])->name('data.delete');
 });

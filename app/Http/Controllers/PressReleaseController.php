@@ -34,7 +34,7 @@ class PressReleaseController extends Controller
         // Filter berdasarkan pencarian global
         if ($request->has('search') && !empty($request->search['value'])) {
             $searchValue = $request->search['value'];
-            $press->where(function($query) use ($searchValue) {
+            $press->where(function ($query) use ($searchValue) {
                 $query->where('press_name', 'like', "%{$searchValue}%")
                     ->orWhere('description', 'like', "%{$searchValue}%");
             });
@@ -48,9 +48,7 @@ class PressReleaseController extends Controller
                 return Carbon::parse($row->created_at)->format('d-m-Y'); // Menampilkan hanya tanggal
             })
             ->addColumn('action', function ($row) {
-                $viewButton = '<a href="/data/' . $row->id . '/view" class="btn btn-sm btn-primary">View</a>';
-                $editButton = '<a href="/data/' . $row->id . '/edit" class="btn btn-sm btn-warning">Edit</a>';
-                return $viewButton . ' ' . $editButton;
+                return $row->id; // Hanya mengembalikan ID untuk frontend
             })
             ->rawColumns(['action'])
             ->make(true);
@@ -71,19 +69,22 @@ class PressReleaseController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-        ]);
+{
+    // Validasi input, pastikan 'description' diterima sebagai string HTML
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string|min:1', // Validasi untuk string HTML
+    ]);
 
-        PressRelease::create([
-            'press_name' => $request->name,
-            'description' => $request->description,
-        ]);
+    // Simpan data ke database, pastikan konten HTML tetap utuh
+    PressRelease::create([
+        'press_name' => $request->name,
+        'description' => $request->description, // Menyimpan HTML
+    ]);
 
-        return redirect()->back()->with('success', 'Data added successfully!');
-    }
+    return redirect()->back()->with('success', 'Data added successfully!');
+}
+
 
     /**
      * Display the specified resource.
@@ -100,7 +101,8 @@ class PressReleaseController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $pressRelease = PressRelease::findOrFail($id);
+        return view('edit', compact('pressRelease'));
     }
 
     /**
@@ -108,14 +110,53 @@ class PressReleaseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'press_name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'link_kabarnusa' => 'nullable|url',
+            'link_baliportal' => 'nullable|url',
+            'link_updatebali' => 'nullable|url',
+            'link_pancarpos' => 'nullable|url',
+            'link_wartadewata' => 'nullable|url',
+            'link_baliexpress' => 'nullable|url',
+            'link_fajarbali' => 'nullable|url',
+            'link_balitribune' => 'nullable|url',
+            'link_radarbali' => 'nullable|url',
+            'link_dutabali' => 'nullable|url',
+            'link_baliekbis' => 'nullable|url', 
+            'link_other' => 'nullable|string',
+        ]);
+
+        $pressRelease = PressRelease::findOrFail($id);
+        $pressRelease->update([
+            'press_name' => $request->press_name,
+            'description' => $request->description,
+            'link_kabarnusa' => $request->link_kabarnusa,
+            'link_baliportal' => $request->link_baliportal,
+            'link_updatebali' => $request->link_updatebali,
+            'link_pancarpos' => $request->link_pancarpos,
+            'link_wartadewata' => $request->link_wartadewata,
+            'link_baliexpress' => $request->link_baliexpress,
+            'link_fajarbali' => $request->link_fajarbali,
+            'link_balitribune' => $request->link_balitribune,
+            'link_radarbali' => $request->link_radarbali,
+            'link_dutabali' => $request->link_dutabali,
+            'link_baliekbis' => $request->link_baliekbis,
+            'link_other' => $request->link_other,
+        ]);
+
+        return redirect()->route('press_release')->with('success', 'Press Release updated successfully.');
+  
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $pressRelease = PressRelease::findOrFail($id);
+        $pressRelease->delete();
+
+        return response()->json(['message' => 'Data berhasil dihapus!']);
     }
 }
