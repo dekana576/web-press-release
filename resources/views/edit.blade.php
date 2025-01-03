@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 <body>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -19,9 +21,10 @@
             </div>
         @endif
     
-        <form method="POST" action="{{ route('data.update', $pressRelease->id) }}">
+        <form method="POST" action="{{ route('data.update', $pressRelease->id) }}" id="createForm">
             @csrf
             @method('PUT') <!-- Untuk spoofing metode HTTP -->
+
         
             <div class="mb-4">
                 <label for="press_name" class="block text-sm font-medium">Press Name</label>
@@ -29,10 +32,13 @@
                 @error('press_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
     
-            <div class="mb-4">
-                <label for="description" class="block text-sm font-medium">Description</label>
-                <textarea id="description" name="description" rows="5" class="w-full p-2 border rounded-md @error('description') border-red-500 @enderror" >{{($pressRelease->description)}}</textarea>
-                @error('description') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700">Description:</label>
+                <!-- QuillJS editor -->
+                <div id="editor" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    {!! $pressRelease->description !!}
+                </div>
+                <input type="hidden" id="description" name="description">
             </div>
     
             <div class="mb-4">
@@ -105,6 +111,38 @@
 </div>
 </div>
 </div>
+    <!-- QuillJS Scripts -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+        // Initialize QuillJS
+        const quill = new Quill('#editor', {
+            theme: 'snow',
+            placeholder: 'Write something amazing...',
+            modules: {
+                toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    ['link', 'image'],
+                ],
+            },
+        });
+    
+        // Ensure Quill content is copied into the hidden textarea before submit
+        const form = document.getElementById('createForm'); // Form ID harus benar
+        form.addEventListener('submit', function (event) {
+            const descriptionInput = document.getElementById('description');
+            const editorContent = quill.root.innerHTML.trim(); // Mengambil konten dari Quill
+    
+            // Jika konten kosong, tampilkan peringatan dan batalkan pengiriman form
+            if (editorContent === '<p><br></p>' || editorContent === '') {
+                alert('Description cannot be empty.');
+                event.preventDefault(); // Mencegah form submit
+            } else {
+                descriptionInput.value = editorContent; // Menyimpan konten ke dalam input tersembunyi
+            }
+        });
+    </script>
     
 </body>
 </html>    
