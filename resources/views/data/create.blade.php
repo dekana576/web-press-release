@@ -17,6 +17,11 @@
                         {{ session('success') }}
                     </div>
                 @endif
+                @if ($errors->has('image.*'))
+                        <div class="mt-2 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                            {{ $errors->first('image.*') }}
+                        </div>
+                        @endif
                 <form action="{{ route('data.store') }}" method="POST" class="space-y-4" id="createForm" enctype="multipart/form-data">
                     @csrf
                     <div>
@@ -33,6 +38,7 @@
                     <div>
                         <label for="image" class="block text-sm font-medium text-gray-700">Upload Images:</label>
                         <input type="file" id="image" name="image[]" accept="image/*" multiple class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        
                     </div>
                     
                     <div class="flex justify-end gap-3">

@@ -79,7 +79,7 @@ class PressReleaseController extends Controller
     $request->validate([
         'name' => 'required|string|max:255',
         'description' => 'required|string',
-        'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate each image
+        'image.*' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif', // Validate each image
     ]);
 
     // Handle multiple image uploads
@@ -106,6 +106,7 @@ class PressReleaseController extends Controller
 
     return redirect()->back()->with('success', 'Data added successfully with images!');
 }
+
 
 
 
