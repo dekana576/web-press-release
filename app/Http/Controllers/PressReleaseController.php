@@ -14,9 +14,61 @@ class PressReleaseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('dashboard');
+        // Ambil tahun dari request, jika tidak ada gunakan tahun sekarang
+        $year = $request->input('year', date('Y'));
+
+        // Hitung total press release per tahun yang dipilih
+        $totalPressRelease = PressRelease::whereYear('created_at', $year)->count();
+
+        // Hitung jumlah total link dari semua press release untuk tahun tersebut
+        $pressReleaseWithLink = PressRelease::whereYear('created_at', $year)->get()->sum(function ($pressRelease) {
+            return ($pressRelease->link_kabarnusa ? 1 : 0) +
+                   ($pressRelease->link_baliportal ? 1 : 0) +
+                   ($pressRelease->link_updatebali ? 1 : 0) +
+                   ($pressRelease->link_pancarpos ? 1 : 0) +
+                   ($pressRelease->link_wartadewata ? 1 : 0) +
+                   ($pressRelease->link_baliexpress ? 1 : 0) +
+                   ($pressRelease->link_fajarbali ? 1 : 0) +
+                   ($pressRelease->link_balitribune ? 1 : 0) +
+                   ($pressRelease->link_radarbali ? 1 : 0) +
+                   ($pressRelease->link_dutabali ? 1 : 0) +
+                   ($pressRelease->link_baliekbis ? 1 : 0);
+        });
+
+        // Hitung jumlah link per bulan berdasarkan tahun
+        $linksPerMonth = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $pressReleases = PressRelease::whereYear('created_at', $year)
+                                         ->whereMonth('created_at', $i)
+                                         ->get();
+    
+            // Hitung jumlah link yang tidak kosong untuk setiap bulan
+            $totalLinksForMonth = $pressReleases->sum(function ($pressRelease) {
+                return ($pressRelease->link_kabarnusa ? 1 : 0) +
+                       ($pressRelease->link_baliportal ? 1 : 0) +
+                       ($pressRelease->link_updatebali ? 1 : 0) +
+                       ($pressRelease->link_pancarpos ? 1 : 0) +
+                       ($pressRelease->link_wartadewata ? 1 : 0) +
+                       ($pressRelease->link_baliexpress ? 1 : 0) +
+                       ($pressRelease->link_fajarbali ? 1 : 0) +
+                       ($pressRelease->link_balitribune ? 1 : 0) +
+                       ($pressRelease->link_radarbali ? 1 : 0) +
+                       ($pressRelease->link_dutabali ? 1 : 0) +
+                       ($pressRelease->link_baliekbis ? 1 : 0);
+            });
+    
+            $linksPerMonth[] = $totalLinksForMonth;
+        }
+
+        // Ambil daftar tahun yang tersedia di database untuk opsi filter
+        $availableYears = PressRelease::selectRaw('YEAR(created_at) as year')
+                                      ->distinct()
+                                      ->pluck('year');
+
+        // Kirim data ke view
+        return view('dashboard', compact('totalPressRelease', 'pressReleaseWithLink', 'linksPerMonth', 'year', 'availableYears'));
     }
     public function pressIndex()
     {
