@@ -9,7 +9,7 @@
 
 
     <p class="mt-6 text-gray-500 leading-relaxed">
-        Press Release Room adalah platform yang menyediakan layanan untuk mengupload artikel press release serta menyediakan ruang bagi media untuk mengunggah dan berbagi link press release. Website ini memungkinkan perusahaan atau individu untuk mempublikasikan artikel berita terbaru mereka, sehingga lebih mudah dijangkau oleh jurnalis dan audiens yang lebih luas. Media dapat dengan mudah meng-upload link ke artikel mereka, memastikan penyebaran informasi yang cepat dan efisien. Dengan antarmuka yang user-friendly, Press Release Room memudahkan pengguna untuk mengelola dan membagikan press release mereka dengan berbagai outlet media dan audiens yang relevan.
+        Press Release Room adalah platform yang menyediakan layanan untuk mengupload artikel press release serta menyediakan ruang bagi media untuk mengunggah dan berbagi link press release. Website ini memungkinkan perusahaan atau individu untuk mempublikasikan artikel berita terbaru mereka, sehingga lebih mudah dijangkau oleh jurnalis. Media dapat dengan mudah meng-upload link ke artikel mereka, memastikan penyebaran informasi yang cepat dan efisien. Dengan antarmuka yang user-friendly, Press Release Room memudahkan pengguna untuk mengelola dan membagikan press release mereka dengan berbagai outlet media dan audiens yang relevan.
     </p>
 
     

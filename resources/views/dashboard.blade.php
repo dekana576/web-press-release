@@ -4,19 +4,21 @@
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
                 <x-welcome />
+                
                 <div class="mb-6 mt-5">
                     <form method="GET" action="{{ route('dashboard') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <!-- Filter Bulan -->
                         <div>
                             <label for="month" class="block text-sm font-medium text-gray-700">Pilih Bulan</label>
                             <select name="month" id="month" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                <option value="">Pilih Bulan</option>
+                                <option value="all" {{ request('month') == 'all' ? 'selected' : '' }}>Semua Bulan</option>
                                 @for ($m = 1; $m <= 12; $m++)
                                     <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
                                         {{ date('F', mktime(0, 0, 0, $m, 1)) }}
@@ -29,12 +31,12 @@
                         <div>
                             <label for="year" class="block text-sm font-medium text-gray-700">Pilih Tahun</label>
                             <select name="year" id="year" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                <option value="">Pilih Tahun</option>
-                                @for ($y = date('Y'); $y >= 2000; $y--)
+                                <option value="all" {{ request('year') == 'all' ? 'selected' : '' }}>Semua Tahun</option>
+                                @foreach ($availableYears as $y)
                                     <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
                                         {{ $y }}
                                     </option>
-                                @endfor
+                                @endforeach
                             </select>
                         </div>
 
@@ -45,7 +47,6 @@
                             </button>
                         </div>
                     </form>
-
                 </div>
 
                 <!-- Tampilkan Total Data -->
@@ -58,12 +59,11 @@
                         <p class="text-lg font-semibold text-gray-700">Press Release with Link</p>
                         <p class="text-3xl font-bold text-gray-900">{{ $pressReleaseWithLink }}</p>
                     </div>
-                    
                 </div>
 
                 <!-- Diagram Garis -->
                 <div class="bg-white p-6 rounded-md shadow">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Jumlah Link Press Release per Bulan</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Jumlah Link Press Release per Tahun</h3>
                     <canvas id="linkChart" class="w-full" height="200"></canvas>
                 </div>
             </div>
@@ -71,40 +71,55 @@
     </div>
 
     <script>
-        // Data labels untuk bulan
-        var labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    // Data labels untuk bulan
+var labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-        // Data jumlah link per bulan (dikirim dari controller)
-        var dataLinks = @json($linksPerMonth);
+// Data jumlah link per bulan (dikirim dari controller)
+var dataLinks = @json(array_values($fullMonthData));
 
-        var data = {
-            labels: labels,
-            datasets: [{
-                label: 'Jumlah Link Press Release',
-                data: dataLinks, // Data jumlah link per bulan
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                tension: 0.1
-            }]
-        };
+// Data jumlah press release per bulan (dikirim dari controller)
+var dataPressReleases = @json(array_values($fullPressReleaseData));
 
-        var config = {
-            type: 'line',
-            data: data,
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+var data = {
+    labels: labels,
+    datasets: [
+        {
+            label: 'Jumlah Link Press Release',
+            data: dataLinks, // Data jumlah link per bulan
+            borderColor: 'rgba(75, 192, 192, 1)', // Warna garis hijau
+            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Warna latar hijau transparan
+            tension: 0.1
+        },
+        {
+            label: 'Jumlah Press Release',  // Label untuk garis merah
+            data: dataPressReleases,        // Data jumlah press release per bulan
+            borderColor: 'rgba(255, 99, 132, 1)',  // Warna merah untuk garis
+            backgroundColor: 'rgba(255, 99, 132, 0.2)', // Warna latar merah transparan
+            tension: 0.1,
+            fill: false // Jangan mengisi area di bawah garis
+        }
+    ]
+};
+
+var config = {
+    type: 'line',
+    data: data,
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
             }
-        };
+        }
+    }
+};
 
-        // Render chart
-        var linkChart = new Chart(
-            document.getElementById('linkChart'),
-            config
-        );
-    </script>
+// Render chart
+var linkChart = new Chart(
+    document.getElementById('linkChart'),
+    config
+);
+
+</script>
+
 </x-app-layout>

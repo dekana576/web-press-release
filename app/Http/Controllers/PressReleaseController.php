@@ -14,62 +14,126 @@ class PressReleaseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    {
-        // Ambil tahun dari request, jika tidak ada gunakan tahun sekarang
-        $year = $request->input('year', date('Y'));
+    
+     public function index(Request $request)
+{
+    // Ambil bulan dan tahun dari request, jika tidak ada default ke semua bulan dan tahun sekarang
+    $year = $request->input('year', 'all');
+    $month = $request->input('month', 'all');
 
-        // Hitung total press release per tahun yang dipilih
-        $totalPressRelease = PressRelease::whereYear('created_at', $year)->count();
+    // Query press release berdasarkan filter tahun dan bulan
+    $query = PressRelease::query();
 
-        // Hitung jumlah total link dari semua press release untuk tahun tersebut
-        $pressReleaseWithLink = PressRelease::whereYear('created_at', $year)->get()->sum(function ($pressRelease) {
+    // Filter tahun jika tahun dipilih, jika 'all' maka semua tahun
+    if ($year !== 'all') {
+        $query->whereYear('created_at', $year);
+    }
+
+    // Filter bulan jika bulan dipilih, jika 'all' maka semua bulan
+    if ($month !== 'all') {
+        $query->whereMonth('created_at', $month);
+    }
+
+    // Hitung total press release berdasarkan filter
+    $totalPressRelease = $query->count();
+
+    // Ambil semua press release yang difilter
+    $pressReleases = $query->get();
+
+    // Hitung jumlah total link dari semua press release yang telah difilter
+    $pressReleaseWithLink = $pressReleases->sum(function ($pressRelease) {
+        return ($pressRelease->link_kabarnusa ? 1 : 0) +
+            ($pressRelease->link_baliportal ? 1 : 0) +
+            ($pressRelease->link_updatebali ? 1 : 0) +
+            ($pressRelease->link_pancarpos ? 1 : 0) +
+            ($pressRelease->link_wartadewata ? 1 : 0) +
+            ($pressRelease->link_baliexpress ? 1 : 0) +
+            ($pressRelease->link_fajarbali ? 1 : 0) +
+            ($pressRelease->link_balitribune ? 1 : 0) +
+            ($pressRelease->link_radarbali ? 1 : 0) +
+            ($pressRelease->link_dutabali ? 1 : 0) +
+            ($pressRelease->link_baliekbis ? 1 : 0);
+    });
+
+    // Jika bulan diset ke "all", hitung link per bulan untuk tahun yang dipilih (atau semua tahun jika 'all')
+    $linksPerMonth = [];
+    $pressReleasePerMonth = [];
+
+    if ($month === 'all') {
+        // Ambil jumlah link per bulan
+        $linksPerMonth = PressRelease::selectRaw('MONTH(created_at) as month, SUM(
+            (link_kabarnusa IS NOT NULL) +
+            (link_baliportal IS NOT NULL) +
+            (link_updatebali IS NOT NULL) +
+            (link_pancarpos IS NOT NULL) +
+            (link_wartadewata IS NOT NULL) +
+            (link_baliexpress IS NOT NULL) +
+            (link_fajarbali IS NOT NULL) +
+            (link_balitribune IS NOT NULL) +
+            (link_radarbali IS NOT NULL) +
+            (link_dutabali IS NOT NULL) +
+            (link_baliekbis IS NOT NULL)
+        ) as total_links')
+        ->when($year !== 'all', function ($query) use ($year) {
+            $query->whereYear('created_at', $year);
+        })
+        ->groupByRaw('MONTH(created_at)')
+        ->pluck('total_links', 'month')
+        ->toArray();
+
+        // Hitung jumlah press release per bulan
+        $pressReleasePerMonth = PressRelease::selectRaw('MONTH(created_at) as month, COUNT(*) as total_press_releases')
+            ->when($year !== 'all', function ($query) use ($year) {
+                $query->whereYear('created_at', $year);
+            })
+            ->groupByRaw('MONTH(created_at)')
+            ->pluck('total_press_releases', 'month')
+            ->toArray();
+    } else {
+        // Jika bulan spesifik dipilih, hanya tampilkan link untuk bulan tersebut
+        $pressReleasesForMonth = $query->get();
+        $linksPerMonth[(int)$month] = $pressReleasesForMonth->sum(function ($pressRelease) {
             return ($pressRelease->link_kabarnusa ? 1 : 0) +
-                   ($pressRelease->link_baliportal ? 1 : 0) +
-                   ($pressRelease->link_updatebali ? 1 : 0) +
-                   ($pressRelease->link_pancarpos ? 1 : 0) +
-                   ($pressRelease->link_wartadewata ? 1 : 0) +
-                   ($pressRelease->link_baliexpress ? 1 : 0) +
-                   ($pressRelease->link_fajarbali ? 1 : 0) +
-                   ($pressRelease->link_balitribune ? 1 : 0) +
-                   ($pressRelease->link_radarbali ? 1 : 0) +
-                   ($pressRelease->link_dutabali ? 1 : 0) +
-                   ($pressRelease->link_baliekbis ? 1 : 0);
+                ($pressRelease->link_baliportal ? 1 : 0) +
+                ($pressRelease->link_updatebali ? 1 : 0) +
+                ($pressRelease->link_pancarpos ? 1 : 0) +
+                ($pressRelease->link_wartadewata ? 1 : 0) +
+                ($pressRelease->link_baliexpress ? 1 : 0) +
+                ($pressRelease->link_fajarbali ? 1 : 0) +
+                ($pressRelease->link_balitribune ? 1 : 0) +
+                ($pressRelease->link_radarbali ? 1 : 0) +
+                ($pressRelease->link_dutabali ? 1 : 0) +
+                ($pressRelease->link_baliekbis ? 1 : 0);
         });
 
-        // Hitung jumlah link per bulan berdasarkan tahun
-        $linksPerMonth = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $pressReleases = PressRelease::whereYear('created_at', $year)
-                                         ->whereMonth('created_at', $i)
-                                         ->get();
-    
-            // Hitung jumlah link yang tidak kosong untuk setiap bulan
-            $totalLinksForMonth = $pressReleases->sum(function ($pressRelease) {
-                return ($pressRelease->link_kabarnusa ? 1 : 0) +
-                       ($pressRelease->link_baliportal ? 1 : 0) +
-                       ($pressRelease->link_updatebali ? 1 : 0) +
-                       ($pressRelease->link_pancarpos ? 1 : 0) +
-                       ($pressRelease->link_wartadewata ? 1 : 0) +
-                       ($pressRelease->link_baliexpress ? 1 : 0) +
-                       ($pressRelease->link_fajarbali ? 1 : 0) +
-                       ($pressRelease->link_balitribune ? 1 : 0) +
-                       ($pressRelease->link_radarbali ? 1 : 0) +
-                       ($pressRelease->link_dutabali ? 1 : 0) +
-                       ($pressRelease->link_baliekbis ? 1 : 0);
-            });
-    
-            $linksPerMonth[] = $totalLinksForMonth;
-        }
-
-        // Ambil daftar tahun yang tersedia di database untuk opsi filter
-        $availableYears = PressRelease::selectRaw('YEAR(created_at) as year')
-                                      ->distinct()
-                                      ->pluck('year');
-
-        // Kirim data ke view
-        return view('dashboard', compact('totalPressRelease', 'pressReleaseWithLink', 'linksPerMonth', 'year', 'availableYears'));
+        // Hitung jumlah press release untuk bulan tersebut
+        $pressReleasePerMonth[(int)$month] = $pressReleasesForMonth->count();
     }
+
+    // Inisialisasi array untuk semua bulan jika filter bulan adalah 'all'
+    $fullMonthData = array_fill(1, 12, 0); // Isi dengan 0 untuk setiap bulan
+    $fullPressReleaseData = array_fill(1, 12, 0); // Isi dengan 0 untuk setiap bulan
+
+    foreach ($linksPerMonth as $monthKey => $totalLinks) {
+        $fullMonthData[$monthKey] = $totalLinks;
+    }
+
+    foreach ($pressReleasePerMonth as $monthKey => $totalPressReleases) {
+        $fullPressReleaseData[$monthKey] = $totalPressReleases;
+    }
+
+    // Ambil daftar tahun yang tersedia di database untuk opsi filter
+    $availableYears = PressRelease::selectRaw('YEAR(created_at) as year')
+                                ->distinct()
+                                ->pluck('year');
+
+    // Kirim data ke view
+    return view('dashboard', compact('totalPressRelease', 'pressReleaseWithLink', 'fullMonthData', 'fullPressReleaseData', 'year', 'month', 'availableYears'));
+}
+
+     
+
+
     public function pressIndex()
     {
         return view('press_release');
