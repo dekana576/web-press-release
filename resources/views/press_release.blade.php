@@ -184,6 +184,9 @@
                                     <th class="px-4 py-2 border border-gray-300">Radarbali</th>
                                     <th class="px-4 py-2 border border-gray-300">dutabali</th>
                                     <th class="px-4 py-2 border border-gray-300">baliekbis</th>
+                                    <th class="px-4 py-2 border border-gray-300">baliprawara</th>
+                                    <th class="px-4 py-2 border border-gray-300">baliwara</th>
+                                    <th class="px-4 py-2 border border-gray-300">balipost</th>
                                     <th class="px-4 py-2 border border-gray-300">Link other</th>
                                     <th class="px-4 py-2 border border-gray-300">Action</th>
                                 </tr>
@@ -217,7 +220,7 @@
                     }
                 },
                 columns: [
-                    { data: 'created_at', name: 'created_at' },
+                    { data: 'date', name: 'date' },
                     { data: 'press_name', name: 'press_name', className: 'responsive-column' },
                     // { data: 'description', name: 'description' },
                     {
@@ -303,6 +306,30 @@
                     {
                         data: 'link_baliekbis',
                         name: 'link_baliekbis',
+                        render: linkRenderer,
+                        orderable: false, // Tidak dapat diurutkan
+                        searchable: false, // Tidak dapat dicari
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'link_baliprawara',
+                        name: 'link_baliprawara',
+                        render: linkRenderer,
+                        orderable: false, // Tidak dapat diurutkan
+                        searchable: false, // Tidak dapat dicari
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'link_baliwara',
+                        name: 'link_baliwara',
+                        render: linkRenderer,
+                        orderable: false, // Tidak dapat diurutkan
+                        searchable: false, // Tidak dapat dicari
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'link_balipost',
+                        name: 'link_balipost',
                         render: linkRenderer,
                         orderable: false, // Tidak dapat diurutkan
                         searchable: false, // Tidak dapat dicari

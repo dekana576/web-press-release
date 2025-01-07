@@ -26,12 +26,12 @@ class PressReleaseController extends Controller
 
     // Filter tahun jika tahun dipilih, jika 'all' maka semua tahun
     if ($year !== 'all') {
-        $query->whereYear('created_at', $year);
+        $query->whereYear('date', $year);
     }
 
     // Filter bulan jika bulan dipilih, jika 'all' maka semua bulan
     if ($month !== 'all') {
-        $query->whereMonth('created_at', $month);
+        $query->whereMonth('date', $month);
     }
 
     // Hitung total press release berdasarkan filter
@@ -52,7 +52,10 @@ class PressReleaseController extends Controller
             ($pressRelease->link_balitribune ? 1 : 0) +
             ($pressRelease->link_radarbali ? 1 : 0) +
             ($pressRelease->link_dutabali ? 1 : 0) +
-            ($pressRelease->link_baliekbis ? 1 : 0);
+            ($pressRelease->link_baliekbis ? 1 : 0) +
+            ($pressRelease->link_baliprawara ? 1 : 0) +
+            ($pressRelease->link_baliwara ? 1 : 0) +
+            ($pressRelease->link_balipost ? 1 : 0);
     });
 
     // Jika bulan diset ke "all", hitung link per bulan untuk tahun yang dipilih (atau semua tahun jika 'all')
@@ -61,7 +64,7 @@ class PressReleaseController extends Controller
 
     if ($month === 'all') {
         // Ambil jumlah link per bulan
-        $linksPerMonth = PressRelease::selectRaw('MONTH(created_at) as month, SUM(
+        $linksPerMonth = PressRelease::selectRaw('MONTH(date) as month, SUM(
             (link_kabarnusa IS NOT NULL) +
             (link_baliportal IS NOT NULL) +
             (link_updatebali IS NOT NULL) +
@@ -72,21 +75,24 @@ class PressReleaseController extends Controller
             (link_balitribune IS NOT NULL) +
             (link_radarbali IS NOT NULL) +
             (link_dutabali IS NOT NULL) +
-            (link_baliekbis IS NOT NULL)
+            (link_baliekbis IS NOT NULL) +
+            (link_baliprawara IS NOT NULL) +
+            (link_baliwara IS NOT NULL) +
+            (link_balipost IS NOT NULL)
         ) as total_links')
         ->when($year !== 'all', function ($query) use ($year) {
-            $query->whereYear('created_at', $year);
+            $query->whereYear('date', $year);
         })
-        ->groupByRaw('MONTH(created_at)')
+        ->groupByRaw('MONTH(date)')
         ->pluck('total_links', 'month')
         ->toArray();
 
         // Hitung jumlah press release per bulan
-        $pressReleasePerMonth = PressRelease::selectRaw('MONTH(created_at) as month, COUNT(*) as total_press_releases')
+        $pressReleasePerMonth = PressRelease::selectRaw('MONTH(date) as month, COUNT(*) as total_press_releases')
             ->when($year !== 'all', function ($query) use ($year) {
-                $query->whereYear('created_at', $year);
+                $query->whereYear('date', $year);
             })
-            ->groupByRaw('MONTH(created_at)')
+            ->groupByRaw('MONTH(date)')
             ->pluck('total_press_releases', 'month')
             ->toArray();
     } else {
@@ -103,7 +109,10 @@ class PressReleaseController extends Controller
                 ($pressRelease->link_balitribune ? 1 : 0) +
                 ($pressRelease->link_radarbali ? 1 : 0) +
                 ($pressRelease->link_dutabali ? 1 : 0) +
-                ($pressRelease->link_baliekbis ? 1 : 0);
+                ($pressRelease->link_baliekbis ? 1 : 0) +
+                ($pressRelease->link_baliprawara ? 1 : 0) +
+                ($pressRelease->link_baliwara ? 1 : 0) +
+                ($pressRelease->link_balipost ? 1 : 0);
         });
 
         // Hitung jumlah press release untuk bulan tersebut
@@ -123,7 +132,7 @@ class PressReleaseController extends Controller
     }
 
     // Ambil daftar tahun yang tersedia di database untuk opsi filter
-    $availableYears = PressRelease::selectRaw('YEAR(created_at) as year')
+    $availableYears = PressRelease::selectRaw('YEAR(date) as year')
                                 ->distinct()
                                 ->pluck('year');
 
@@ -146,7 +155,7 @@ class PressReleaseController extends Controller
 
         // Filter berdasarkan bulan
         if ($request->has('month') && !empty($request->month)) {
-            $press->whereMonth('created_at', $request->month);
+            $press->whereMonth('date', $request->month);
         }
 
         // Filter berdasarkan pencarian global
@@ -162,8 +171,8 @@ class PressReleaseController extends Controller
         $press->orderBy('created_at', 'desc');
 
         return DataTables::of($press)
-            ->editColumn('created_at', function ($row) {
-                return Carbon::parse($row->created_at)->format('d-m-Y'); // Menampilkan hanya tanggal
+            ->editColumn('date', function ($row) {
+                return Carbon::parse($row->date)->format('d-m-Y'); // Menampilkan hanya tanggal
             })
             ->editColumn('press_name', function ($row) {
                 $maxLength = 50; // Batasi panjang karakter
@@ -193,6 +202,7 @@ class PressReleaseController extends Controller
     public function store(Request $request)
 {
     $request->validate([
+        'date' => 'required|date',
         'name' => 'required|string|max:255',
         'description' => 'required|string',
         'image.*' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif', // Validate each image
@@ -215,6 +225,7 @@ class PressReleaseController extends Controller
 
     // Save press release data with the image paths stored as JSON in the database
     $pressRelease = PressRelease::create([
+        'date' => $request->date,
         'press_name' => $request->name,
         'description' => $request->description,
         'image' => json_encode($imagePaths), // Store image paths as JSON in the database
@@ -251,6 +262,7 @@ class PressReleaseController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
+            'date' => 'required|date',
             'press_name' => 'required|string|max:255',
             'description' => 'required|string',
             'link_kabarnusa' => 'nullable|url',
@@ -264,11 +276,15 @@ class PressReleaseController extends Controller
             'link_radarbali' => 'nullable|url',
             'link_dutabali' => 'nullable|url',
             'link_baliekbis' => 'nullable|url', 
+            'link_baliprawara' => 'nullable|url', 
+            'link_baliwara' => 'nullable|url', 
+            'link_balipost' => 'nullable|url', 
             'link_other' => 'nullable|string',
         ]);
 
         $pressRelease = PressRelease::findOrFail($id);
         $pressRelease->update([
+            'date' => $request->date,
             'press_name' => $request->press_name,
             'description' => $request->description,
             'link_kabarnusa' => $request->link_kabarnusa,
@@ -282,6 +298,9 @@ class PressReleaseController extends Controller
             'link_radarbali' => $request->link_radarbali,
             'link_dutabali' => $request->link_dutabali,
             'link_baliekbis' => $request->link_baliekbis,
+            'link_baliprawara' => $request->link_baliprawara,
+            'link_baliwara' => $request->link_baliwara,
+            'link_balipost' => $request->link_balipost,
             'link_other' => $request->link_other,
         ]);
 

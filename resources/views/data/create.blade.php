@@ -24,6 +24,10 @@
                         @endif
                 <form action="{{ route('data.store') }}" method="POST" class="space-y-4" id="createForm" enctype="multipart/form-data">
                     @csrf
+                    <div class="mb-4">
+                        <label for="date" class="block text-gray-600 font-medium mb-2">Tanggal Press Release</label>
+                        <input type="date" id="date" name="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Pilih tanggal" required>
+                    </div>
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700">Name:</label>
                         <input type="text" id="name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">

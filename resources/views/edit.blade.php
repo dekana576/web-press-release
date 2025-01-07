@@ -25,6 +25,10 @@
             @csrf
             @method('PUT') <!-- Untuk spoofing metode HTTP -->
 
+            <div class="mb-4 mt-4">
+                <label for="date" class="block text-sm font-medium">Date</label>
+                <input type="date" id="date" name="date" value="{{ old('date', $pressRelease->date) }}" class="w-full p-2 border rounded-md @error('press_name') border-red-500 @enderror" placeholder="Pilih tanggal" required>@error('press_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            </div>
         
             <div class="mb-4">
                 <label for="press_name" class="block text-sm font-medium">Press Name</label>
@@ -95,6 +99,21 @@
                 <label for="link_baliekbis" class="block text-sm font-medium">Link_baliekbis</label>
                 <input type="url" id="link_baliekbis" name="link_baliekbis" class="w-full p-2 border rounded-md @error('link_baliekbis') border-red-500 @enderror" value="{{($pressRelease->link_baliekbis)}}">
                 @error('link_baliekbis') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            </div>
+            <div class="mb-4">
+                <label for="link_baliprawara" class="block text-sm font-medium">Link_Baliprawara</label>
+                <input type="url" id="link_baliprawara" name="link_baliprawara" class="w-full p-2 border rounded-md @error('link_baliprawara') border-red-500 @enderror" value="{{($pressRelease->link_baliprawara)}}">
+                @error('link_baliprawara') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            </div>
+            <div class="mb-4">
+                <label for="link_baliwara" class="block text-sm font-medium">Link_baliwara</label>
+                <input type="url" id="link_baliwara" name="link_baliwara" class="w-full p-2 border rounded-md @error('link_baliwara') border-red-500 @enderror" value="{{($pressRelease->link_baliwara)}}">
+                @error('link_baliwara') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            </div>
+            <div class="mb-4">
+                <label for="link_balipost" class="block text-sm font-medium">Link_balipost</label>
+                <input type="url" id="link_balipost" name="link_balipost" class="w-full p-2 border rounded-md @error('link_balipost') border-red-500 @enderror" value="{{($pressRelease->link_balipost)}}">
+                @error('link_balipost') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
                 <label for="link_other" class="block text-sm font-medium">Link_other</label>

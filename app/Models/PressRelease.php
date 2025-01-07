@@ -26,7 +26,11 @@ class PressRelease extends Model
         'link_radarbali',
         'link_dutabali',
         'link_baliekbis',
+        'link_baliprawara',
+        'link_baliwara',
+        'link_balipost',
         'link_other',
+        'date',
 
     ];
 }
