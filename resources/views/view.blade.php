@@ -69,12 +69,13 @@
                 <!-- Display the image if it exists -->
                 <!-- Display the image slider if images exist -->
                 @if($press->image)
-                    <div class="mt-4">
+                    <div class="mt-4 mb-4">
                         <div class="swiper-container relative mt-2">
                             <div class="swiper-wrapper">
                                 @foreach (json_decode($press->image) as $image)
                                     <div class="swiper-slide">
-                                        <img src="{{ url('storage/' . $image) }}" alt="Press Release Image" class="w-full rounded-lg shadow-md">
+                                        <img src="{{ url('storage/' . $image) }}" alt="Press Release Image" 
+                                            class="w-full h-auto max-h-96 object-cover rounded-lg shadow-md">
                                     </div>
                                 @endforeach
                             </div>
@@ -86,6 +87,7 @@
                         </div>
                     </div>
                 @endif
+
 
 
 
@@ -133,6 +135,9 @@
                     {!! renderLinkButton('Radar Bali', $press->link_radarbali) !!}
                     {!! renderLinkButton('Duta Bali', $press->link_dutabali) !!}
                     {!! renderLinkButton('Baliekbis', $press->link_baliekbis) !!}
+                    {!! renderLinkButton('Bali Prawara', $press->link_baliprawara) !!}
+                    {!! renderLinkButton('Bali Wara', $press->link_baliwara) !!}
+                    {!! renderLinkButton('Bali Post', $press->link_balipost) !!}
 
                     <!-- Other Links -->
                     <div class="text-center">

@@ -45,78 +45,78 @@
                 <input type="hidden" id="description" name="description">
             </div>
     
-            <div class="mb-4">
-                <label for="link_kabarnusa" class="block text-sm font-medium">Link_kabarnusa</label>
+            <div class="mb-4 mt-4">
+                <label for="link_kabarnusa" class="block text-sm font-medium">Link Kabarnusa</label>
                 <input type="url" id="link_kabarnusa" name="link_kabarnusa" class="w-full p-2 border rounded-md @error('link_kabarnusa') border-red-500 @enderror" value="{{($pressRelease->link_kabarnusa)}}">
                 @error('link_kabarnusa') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
-                <label for="link_baliportal" class="block text-sm font-medium">Link_baliportal</label>
+                <label for="link_baliportal" class="block text-sm font-medium">Link Baliportal</label>
                 <input type="url" id="link_baliportal" name="link_baliportal" class="w-full p-2 border rounded-md @error('link_baliportal') border-red-500 @enderror" value="{{($pressRelease->link_baliportal)}}">
                 @error('link_baliportal') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
-                <label for="link_updatebali" class="block text-sm font-medium">Link_updatebali</label>
+                <label for="link_updatebali" class="block text-sm font-medium">Link Updatebali</label>
                 <input type="url" id="link_updatebali" name="link_updatebali" class="w-full p-2 border rounded-md @error('link_updatebali') border-red-500 @enderror" value="{{($pressRelease->link_updatebali)}}">
                 @error('link_updatebali') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
-                <label for="link_pancarpos" class="block text-sm font-medium">Link_pancarpos</label>
+                <label for="link_pancarpos" class="block text-sm font-medium">Link Pancarpos</label>
                 <input type="url" id="link_pancarpos" name="link_pancarpos" class="w-full p-2 border rounded-md @error('link_pancarpos') border-red-500 @enderror" value="{{($pressRelease->link_pancarpos)}}">
                 @error('link_pancarpos') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
-                <label for="link_wartadewata" class="block text-sm font-medium">Link_wartadewata</label>
+                <label for="link_wartadewata" class="block text-sm font-medium">Link Wartadewata</label>
                 <input type="url" id="link_wartadewata" name="link_wartadewata" class="w-full p-2 border rounded-md @error('link_wartadewata') border-red-500 @enderror " value="{{($pressRelease->link_wartadewata)}}">
                 @error('link_wartadewata') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
-                <label for="link_baliexpress" class="block text-sm font-medium">Link_baliexpress</label>
+                <label for="link_baliexpress" class="block text-sm font-medium">Link Baliexpress</label>
                 <input type="url" id="link_baliexpress" name="link_baliexpress" class="w-full p-2 border rounded-md @error('link_baliexpress') border-red-500 @enderror" value="{{($pressRelease->link_baliexpress)}}">
                 @error('link_baliexpress') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
-                <label for="link_fajarbali" class="block text-sm font-medium">Link_fajarbali</label>
+                <label for="link_fajarbali" class="block text-sm font-medium">Link Fajarbali</label>
                 <input type="url" id="link_fajarbali" name="link_fajarbali" class="w-full p-2 border rounded-md @error('link_fajarbali') border-red-500 @enderror" value="{{($pressRelease->link_fajarbali)}}">
                 @error('link_fajarbali') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
-                <label for="link_balitribune" class="block text-sm font-medium">Link_balitribune</label>
+                <label for="link_balitribune" class="block text-sm font-medium">Link Balitribune</label>
                 <input type="url" id="link_balitribune" name="link_balitribune" class="w-full p-2 border rounded-md @error('link_balitribune') border-red-500 @enderror" value="{{($pressRelease->link_balitribune)}}">
                 @error('link_balitribune') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
-                <label for="link_radarbali" class="block text-sm font-medium">Link_radarbali</label>
+                <label for="link_radarbali" class="block text-sm font-medium">Link Radarbali</label>
                 <input type="url" id="link_radarbali" name="link_radarbali" class="w-full p-2 border rounded-md @error('link_radarbali') border-red-500 @enderror" value="{{($pressRelease->link_radarbali)}}">
                 @error('link_radarbali') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
-                <label for="link_dutabali" class="block text-sm font-medium">Link_dutabali</label>
+                <label for="link_dutabali" class="block text-sm font-medium">Link Dutabali</label>
                 <input type="url" id="link_dutabali" name="link_dutabali" class="w-full p-2 border rounded-md @error('link_dutabali') border-red-500 @enderror" value="{{($pressRelease->link_dutabali)}}">
                 @error('link_dutabali') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
-                <label for="link_baliekbis" class="block text-sm font-medium">Link_baliekbis</label>
+                <label for="link_baliekbis" class="block text-sm font-medium">Link Baliekbis</label>
                 <input type="url" id="link_baliekbis" name="link_baliekbis" class="w-full p-2 border rounded-md @error('link_baliekbis') border-red-500 @enderror" value="{{($pressRelease->link_baliekbis)}}">
                 @error('link_baliekbis') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
-                <label for="link_baliprawara" class="block text-sm font-medium">Link_Baliprawara</label>
+                <label for="link_baliprawara" class="block text-sm font-medium">Link Baliprawara</label>
                 <input type="url" id="link_baliprawara" name="link_baliprawara" class="w-full p-2 border rounded-md @error('link_baliprawara') border-red-500 @enderror" value="{{($pressRelease->link_baliprawara)}}">
                 @error('link_baliprawara') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
-                <label for="link_baliwara" class="block text-sm font-medium">Link_baliwara</label>
+                <label for="link_baliwara" class="block text-sm font-medium">Link Baliwara</label>
                 <input type="url" id="link_baliwara" name="link_baliwara" class="w-full p-2 border rounded-md @error('link_baliwara') border-red-500 @enderror" value="{{($pressRelease->link_baliwara)}}">
                 @error('link_baliwara') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
-                <label for="link_balipost" class="block text-sm font-medium">Link_balipost</label>
+                <label for="link_balipost" class="block text-sm font-medium">Link Balipost</label>
                 <input type="url" id="link_balipost" name="link_balipost" class="w-full p-2 border rounded-md @error('link_balipost') border-red-500 @enderror" value="{{($pressRelease->link_balipost)}}">
                 @error('link_balipost') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
             <div class="mb-4">
-                <label for="link_other" class="block text-sm font-medium">Link_other</label>
+                <label for="link_other" class="block text-sm font-medium">Link Other</label>
                 <input type="text" id="link_other" name="link_other" class="w-full p-2 border rounded-md @error('link_other') border-red-500 @enderror" value="{{($pressRelease->link_other)}}">
                 @error('link_other') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>

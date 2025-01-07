@@ -182,12 +182,12 @@
                                     <th class="px-4 py-2 border border-gray-300">Fajarbali</th>
                                     <th class="px-4 py-2 border border-gray-300">Balitribune</th>
                                     <th class="px-4 py-2 border border-gray-300">Radarbali</th>
-                                    <th class="px-4 py-2 border border-gray-300">dutabali</th>
-                                    <th class="px-4 py-2 border border-gray-300">baliekbis</th>
-                                    <th class="px-4 py-2 border border-gray-300">baliprawara</th>
-                                    <th class="px-4 py-2 border border-gray-300">baliwara</th>
-                                    <th class="px-4 py-2 border border-gray-300">balipost</th>
-                                    <th class="px-4 py-2 border border-gray-300">Link other</th>
+                                    <th class="px-4 py-2 border border-gray-300">Dutabali</th>
+                                    <th class="px-4 py-2 border border-gray-300">Baliekbis</th>
+                                    <th class="px-4 py-2 border border-gray-300">Baliprawara</th>
+                                    <th class="px-4 py-2 border border-gray-300">Baliwara</th>
+                                    <th class="px-4 py-2 border border-gray-300">Balipost</th>
+                                    <th class="px-4 py-2 border border-gray-300">Link Other</th>
                                     <th class="px-4 py-2 border border-gray-300">Action</th>
                                 </tr>
                             </thead>
