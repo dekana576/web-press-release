@@ -92,7 +92,7 @@
 
 
                 <!-- Judul -->
-                <h1 class="text-4xl font-bold text-center mb-5">{{ $press->press_name }}</h1>
+                <h1 class="text-4xl font-bold text-center mb-10 mt-5">{{ $press->press_name }}</h1>
 
                 
                 <!-- Deskripsi -->
