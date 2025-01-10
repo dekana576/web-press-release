@@ -63,7 +63,7 @@
                        class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition-all">
                         &lt; Back
                     </a>
-                    <p class="text-gray-500 text-sm">Tanggal: {{ \Carbon\Carbon::parse($press->created_at)->format('d-m-Y') }}</p>
+                    <p class="text-gray-500 text-sm">Tanggal: {{ \Carbon\Carbon::parse($press->date)->format('d-m-Y') }}</p>
                 </div>
 
                 <!-- Display the image if it exists -->
